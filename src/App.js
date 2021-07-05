@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class List extends React.Component {
+    state = {
+        linguagens: []
+    };
+
+    componentDidMount() {
+        fetch('http://alefesouza.dev/api/languages.php')
+            .then(res => res.json())
+            .then(res => {
+                this.setState({
+                    linguagens: res
+                });
+            });
+    }
+
+    render() {
+        let content = <p>Carregando...</p>
+
+        if (this.state.linguagens.length !== 0) {
+            content = (<ul>
+                {this.state.linguagens.map(item => (
+                    <li key={item.id}>
+                        <p><b>Nome:</b> {item.name}</p>
+                        <p><b>Criador:</b> {item.creator}</p>
+                        <p><b>Ano de criação:</b> {item.year}</p>
+                    </li>
+                ))}
+            </ul>)
+        }
+
+        return (
+            <div>
+                <h1>Lista de linguagens</h1>
+
+                {content}
+            </div>
+        );
+    }
 }
 
-export default App;
+export default List;
